@@ -39,11 +39,19 @@ class EmpleadoBloc implements BlocBase{
 
   obtenerListMarcas(){}
 
-  obtenerHorario(){}
+  obtenerHorario(){
+
+  }
 
   obtenerMarca() {}
 
   obtenerEmpleado() {}
+
+//  obtenerDatosPrueba(){
+//    Dia _dia = Dia();
+//
+//    _dia.getFromDBbyId(1);
+//  }
 
   @override
   void dispose() {
@@ -57,3 +65,5 @@ class EmpleadoBloc implements BlocBase{
   }
 
 }
+
+EmpleadoBloc empleadoBloc = EmpleadoBloc();

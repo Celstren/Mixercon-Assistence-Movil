@@ -13,9 +13,21 @@ class ControladorSesion implements BlocBase {
 
   validarEmpleadoRegistrado(){}
 
+  obtenerEmpleado() async {
+    Usuario usuario = Usuario();
+
+    usuario = await usuario.getFromDBbyId(71625040);
+
+    if (usuario.usuarioId != null){
+      pushUsuario(usuario);
+    }
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
   }
 
 }
+
+ControladorSesion controladorSesion = ControladorSesion();
