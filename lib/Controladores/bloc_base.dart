@@ -1,144 +1,57 @@
-library bloc_pattern;
-
 import 'package:flutter/material.dart';
+
+Type _typeOf<T>() => T;
 
 abstract class BlocBase {
   void dispose();
 }
 
-class BlocProvider<T extends BlocBase> extends StatefulWidget {
-  BlocProvider({
+class BlocProvider2<T extends BlocBase> extends StatefulWidget {
+  BlocProvider2({
     Key key,
     @required this.child,
-    this.bloc,
-  }) : super(key: key);
+    @required this.bloc,
+  }): super(key: key);
 
-  final T bloc;
   final Widget child;
+  final T bloc;
 
   @override
   _BlocProviderState<T> createState() => _BlocProviderState<T>();
 
-  static T of<T extends BlocBase>(BuildContext context) {
-    final type = _typeOf<_HelperBlocProvider<T>>();
-    _HelperBlocProvider<T> provider =
-    context.inheritFromWidgetOfExactType(type);
-    return provider.bloc;
+  static T of<T extends BlocBase>(BuildContext context){
+    final type = _typeOf<_BlocProviderInherited<T>>();
+    _BlocProviderInherited<T> provider =
+        context.ancestorInheritedElementForWidgetOfExactType(type)?.widget;
+    return provider?.bloc;
   }
-
-  static Type _typeOf<T>() => T;
 }
 
-class _BlocProviderState<T extends BlocBase>
-    extends State<BlocProvider<BlocBase>> {
+class _BlocProviderState<T extends BlocBase> extends State<BlocProvider2<T>>{
   @override
-  void dispose() {
-    bloc.dispose();
+  void dispose(){
+    widget.bloc?.dispose();
     super.dispose();
   }
 
-  T bloc;
-
   @override
-  void initState() {
-    super.initState();
-    bloc = widget.bloc;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _HelperBlocProvider<T>(
+  Widget build(BuildContext context){
+    return new _BlocProviderInherited<T>(
+      bloc: widget.bloc,
       child: widget.child,
-      bloc: bloc,
     );
   }
 }
 
-class _HelperBlocProvider<T extends BlocBase> extends InheritedWidget {
-  final T bloc;
-
-  _HelperBlocProvider({this.bloc, Widget child}) : super(child: child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return oldWidget != this;
-  }
-}
-
-
-class Bloc<T extends BlocBase> {
-  final T bloc;
-
-  Bloc(this.bloc);
-}
-
-class BlocProviderList extends StatefulWidget {
-  BlocProviderList({
+class _BlocProviderInherited<T> extends InheritedWidget {
+  _BlocProviderInherited({
     Key key,
-    @required this.child,
-    this.listBloc,
-  }) : super(key: key);
+    @required Widget child,
+    @required this.bloc,
+  }) : super(key: key, child: child);
 
-  final List<Bloc> listBloc;
-  final Widget child;
+  final T bloc;
 
   @override
-  _BlocProviderListState createState() => _BlocProviderListState();
-
-  static T of<T extends BlocBase>(BuildContext context) {
-    final type = _typeOf<_HelperBlocListProvider>();
-
-    _HelperBlocListProvider provider =
-    context.inheritFromWidgetOfExactType(type);
-
-    BlocBase bloc = provider.listBloc.where((bloc) => bloc.bloc is T).toList()[0]?.bloc;
-
-    return bloc;
-  }
-
-  static Type _typeOf<T>() => T;
+  bool updateShouldNotify(_BlocProviderInherited oldWidget) => false;
 }
-
-class _BlocProviderListState extends State<BlocProviderList> {
-  @override
-  void dispose() {
-
-    for (int i=0; i<bloc.length;i++){
-      bloc[i].bloc.dispose();
-    }
-
-//    bloc.forEach((bloc){
-//      bloc.bloc.dispose();
-//    });
-
-    super.dispose();
-  }
-
-  List<Bloc> bloc;
-
-  @override
-  void initState() {
-    super.initState();
-    bloc = widget.listBloc;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _HelperBlocListProvider(
-      child: widget.child,
-      listBloc: bloc,
-    );
-  }
-}
-
-class _HelperBlocListProvider extends InheritedWidget {
-  final List<Bloc> listBloc;
-
-  _HelperBlocListProvider({this.listBloc, Widget child}) : super(child: child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return oldWidget != this;
-  }
-}
-

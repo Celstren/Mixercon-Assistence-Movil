@@ -37,17 +37,13 @@ class EmpleadoBloc implements BlocBase{
   Function(String) get pushMensaje => _controladorMensaje.sink.add;
   Stream<String> get streamMensaje => _controladorMensaje;
 
-  getMarca(){}
+  obtenerListMarcas(){}
 
-  validarMarca(){}
+  obtenerHorario(){}
 
-  guardarMarca(){}
+  obtenerMarca() {}
 
-  
-
-  getListMarcas(){}
-
-  getHorario(){}
+  obtenerEmpleado() {}
 
   @override
   void dispose() {
