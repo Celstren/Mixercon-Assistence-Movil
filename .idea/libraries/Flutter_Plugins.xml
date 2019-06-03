@@ -1,6 +1,8 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://D:/Development Tools/Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-0.5.15" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES />
   </library>
