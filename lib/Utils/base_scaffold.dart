@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mixercon_assistance/Utils/screen_utils.dart';
+import 'package:mixercon_assistance/Utils/vista_inicio.dart';
+import 'package:mixercon_assistance/Vistas/vista_marcar_asistencia.dart';
+
+import 'IconDrawer.dart';
 
 class BaseScaffold extends StatefulWidget {
   @override
@@ -9,8 +14,72 @@ class BaseScaffold extends StatefulWidget {
 class BaseScaffoldState extends State<BaseScaffold>{
   @override
   Widget build(BuildContext context) {
+
+    final Function wp = ScreenUtils(MediaQuery.of(context).size).wp;
+    final Function hp = ScreenUtils(MediaQuery.of(context).size).hp;
+
+    bool inicioSesion;
+
+    Widget _opcionDrawer(String nombreOpcion){
+      return GestureDetector(
+        onTap: (){
+          print(nombreOpcion);
+        },
+        child: Container(
+          height: hp(10),
+          color: Colors.yellow,
+          margin: EdgeInsets.symmetric(horizontal: wp(5)),
+          child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(nombreOpcion, style: TextStyle(fontSize: wp(5)))
+          ),
+        ),
+      );
+    }
+
+    Widget _construirTituloDrawer(){
+      return Container(
+        height: hp(20),
+        width: wp(100),
+        child: Image(image: AssetImage("assets/Resources/Icons/MixerconLogo.png"),),
+      );
+    }
+
+    Widget _construirCuerpoDrawer(){
+      return Container(
+        height: hp(80),
+        width: wp(100),
+        color: Colors.yellow,
+        child: ListView(
+          children: <Widget>[
+            _opcionDrawer('Inicio'),
+            _opcionDrawer('Marcar Asistencia'),
+            _opcionDrawer('Perfil'),
+            _opcionDrawer('Cerrar Sesión'),
+          ],
+        ),
+      );
+    }
+
     // TODO: implement build
-    return null;
+    return Scaffold(
+      drawer: Drawer(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              _construirTituloDrawer(),
+              _construirCuerpoDrawer(),
+            ],
+          ),
+        ),
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.yellow,
+        iconTheme: IconThemeData(color: Colors.black),
+        title: Text("MIXERCON APP",style: TextStyle(color: Colors.black,fontWeight: FontWeight.w500,fontSize: 20)),
+      ),
+      body: VistaInicio(),
+    );
   }
 
 }
