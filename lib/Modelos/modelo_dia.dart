@@ -4,10 +4,13 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mixercon_assistance/Utils/enpoints.dart';
 
 Dia diaFromJson(String str) => Dia.fromJson(json.decode(str));
 
 String diaToJson(Dia data) => json.encode(data.toJson());
+
+final String URLBase = "https://telonetavo.000webhostapp.com/Conexion/Metodos_Dia/";
 
 class Dia {
   int diaId;
@@ -29,13 +32,13 @@ class Dia {
   });
 
   factory Dia.fromJson(Map<String, dynamic> json) => new Dia(
-    diaId: json["DiaID"],
+    diaId: int.parse(json["DiaID"]),
     nombre: json["Nombre"],
-    fechaActual: json["Fecha_Actual"],
-    horaIngreso: json["Hora_Ingreso"],
-    horaSalida: json["Hora_Salida"],
-    minutosTolerancia: json["Minutos_Tolerancia"],
-    horarioId: json["HorarioID"],
+    fechaActual: DateTime.parse(json["Fecha_Actual"]),
+    horaIngreso: DateTime.parse(json["Hora_Ingreso"]),
+    horaSalida: DateTime.parse(json["Hora_Salida"]),
+    minutosTolerancia: int.parse(json["Minutos_Tolerancia"]),
+    horarioId: int.parse(json["HorarioID"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -47,62 +50,44 @@ class Dia {
     "Minutos_Tolerancia": minutosTolerancia,
     "HorarioID": horarioId,
   };
-
-  Dia getFromDBbyId(int diaId){
-    Dia dia = Dia();
-    print(fetchPost());
-
-    return dia;
-  }
-
-  Future<Post> fetchPost() async {
-    final response =
-        await http.get('https://jsonplaceholder.typicode.com/posts/1');
-
-    if (response.statusCode == 200) {
-      // If server returns an OK response, parse the JSON
-      Post _post = Post.fromJson(json.decode(response.body));
-      print(_post.title);
-      return _post;
-    } else {
-      // If that response was not OK, throw an error.
-      throw Exception('Failed to load post');
-    }
-  }
-
-  Dia getFromDBbyHorarioId(int horarioId){
-    Dia dia = Dia();
-    return dia;
-  }
-
-  List<Dia> getFromDBAll(){
-    List<Dia> dias = List<Dia>();
-    return dias;
-  }
-
-  int updateDiaToDB(){
-    return 0;
-  }
-
-  int modifyDiaToDB(){
-    return 0;
-  }
 }
 
-class Post {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
+Dia getFromDBbyId(int diaId){
+  Dia dia = Dia();
 
-  Post({this.userId, this.id, this.title, this.body});
+  return dia;
+}
 
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
+Future<List<Dia>> getFromDBbyHorarioId(int horarioId) async {
+  List<Dia> dias = List<Dia>();
+
+  final response =
+      await http.get(URLBase + EndPoints.OBTENER_DIA_POR_HORARIO + horarioId.toString());
+  if (response.statusCode == 200){
+    final data = json.decode(response.body);
+    Dia dia = Dia();
+    List<dynamic> result = data["resultado"];
+
+    result.forEach((d){
+      dia = Dia.fromJson(d);
+      dias.add(dia);
+    });
+  } else {
+    throw Exception('Fallo al conseguir datos de la base de datos');
   }
+
+  return dias;
+}
+
+List<Dia> getFromDBAll(){
+  List<Dia> dias = List<Dia>();
+  return dias;
+}
+
+int updateDiaToDB(){
+  return 0;
+}
+
+int modifyDiaToDB(){
+  return 0;
 }

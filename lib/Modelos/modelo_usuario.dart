@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mixercon_assistance/Utils/enpoints.dart';
 
 Usuario usuarioFromJson(String str) => Usuario.fromJson(json.decode(str));
 
@@ -58,32 +59,49 @@ class Usuario {
     "SedeID": sedeId,
   };
 
-  Future<Usuario> getFromDBbyId(int usuarioId) async {
+
+}
+
+Future<Usuario> getFromDBbyId(int usuarioId) async {
+  Usuario usuario = Usuario();
+
+  final response =
+  await http.get(URLBase + EndPoints.OBTENER_USUARIO + usuarioId.toString());
+  if (response.statusCode == 200){
+    final data = json.decode(response.body);
+    usuario = Usuario.fromJson(data["resultado"][0]);
+    print(usuario.nombre);
+  } else {
+    throw Exception('Fallo al conseguir datos de la base de datos');
+  }
+
+  return usuario;
+}
+
+Future<List<Usuario>> getFromDBAll() async {
+  List<Usuario> usuarios = List<Usuario>();
+
+  final response =
+  await http.get(URLBase + EndPoints.OBTENER_TODOS_USUARIO);
+  if (response.statusCode == 200){
+    final data = json.decode(response.body);
     Usuario usuario = Usuario();
-
-    final response =
-    await http.get(URLBase + 'Obtener_Usuario.php?Codigo=$usuarioId');
-    if (response.statusCode == 200){
-      final data = json.decode(response.body);
-      usuario = Usuario.fromJson(data["resultado"][0]);
-      print(usuario.nombre);
-    } else {
-      throw Exception('Fallo al conseguir datos de la base de datos');
-    }
-
-    return usuario;
+    List<dynamic> result = data["resultado"];
+    result.forEach((u){
+      usuario = Usuario.fromJson(u);
+      usuarios.add(usuario);
+    });
+  } else {
+    throw Exception('Fallo al conseguir datos de la base de datos');
   }
 
-  List<Usuario> getFromDBAll(){
-    List<Usuario> usuarios = List<Usuario>();
-    return usuarios;
-  }
+  return usuarios;
+}
 
-  int updateUsuarioToDB(){
-    return 0;
-  }
+int updateUsuarioToDB(){
+  return 0;
+}
 
-  int deleteUsuarioToDB(){
-    return 0;
-  }
+int deleteUsuarioToDB(){
+  return 0;
 }

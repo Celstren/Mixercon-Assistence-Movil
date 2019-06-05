@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mixercon_assistance/Controladores/controlador_empleado.dart';
-import 'package:mixercon_assistance/Controladores/controlador_sesion.dart';
+import 'package:mixercon_assistance/Modelos/modelo_dia.dart';
 import 'package:mixercon_assistance/Modelos/modelo_usuario.dart';
 import 'package:mixercon_assistance/Utils/screen_utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
+import 'package:mixercon_assistance/Utils/validators.dart' as Validators;
 
 class VistaInicio extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class VistaInicioState extends State<VistaInicio> {
   @override
   void initState() {
     // TODO: implement initState
-    controladorSesion.obtenerEmpleado();
+    controladorEmpleado.obtenerEmpleado();
     super.initState();
   }
 
@@ -39,7 +41,7 @@ class VistaInicioState extends State<VistaInicio> {
                 children: <Widget>[
                   Container(
                     child: StreamBuilder<Usuario>(
-                        stream: controladorSesion.streamUsuario,
+                        stream: controladorEmpleado.streamUsuario,
                         builder: (context, usuarioSnapshot) {
                           String nombre = usuarioSnapshot.hasData && usuarioSnapshot.data != null? usuarioSnapshot.data.nombre : "";
                           return AutoSizeText(
@@ -50,16 +52,44 @@ class VistaInicioState extends State<VistaInicio> {
                         }),
                   ),
                   Container(
-                    child: AutoSizeText(
-                      "Inicio de jornada:",
-                      style: TextStyle(fontSize: wp(5)),
-                    ),
+                    child: StreamBuilder<List<Dia>>(
+                      stream: controladorEmpleado.streamDias,
+                        builder: (context, diaSnapshot){
+                      String inicio = "";
+
+                      if (diaSnapshot.hasData && diaSnapshot.data.length > 0){
+                        diaSnapshot.data.forEach((d){
+                          if (Validators.validateSameDays(d.fechaActual, DateTime.now())){
+                            inicio = DateFormat('kk:mm').format(d.horaIngreso);
+                          }
+                        });
+                      }
+
+                      return AutoSizeText(
+                        "Inicio de jornada: $inicio",
+                        style: TextStyle(fontSize: wp(5)),
+                      );
+                    }),
                   ),
                   Container(
-                    child: AutoSizeText(
-                      "Fin de jornada:",
-                      style: TextStyle(fontSize: wp(5)),
-                    ),
+                    child: StreamBuilder<List<Dia>>(
+                        stream: controladorEmpleado.streamDias,
+                        builder: (context, diaSnapshot){
+                          String fin = "";
+
+                          if (diaSnapshot.hasData && diaSnapshot.data.length > 0){
+                            diaSnapshot.data.forEach((d){
+                              if (Validators.validateSameDays(d.fechaActual, DateTime.now()) || Validators.validateSameDays(d.horaSalida, DateTime.now())){
+                                fin = DateFormat('kk:mm').format(d.horaSalida);
+                              }
+                            });
+                          }
+
+                          return AutoSizeText(
+                            "Fin de jornada: $fin",
+                            style: TextStyle(fontSize: wp(5)),
+                          );
+                        }),
                   ),
                 ],
               ),

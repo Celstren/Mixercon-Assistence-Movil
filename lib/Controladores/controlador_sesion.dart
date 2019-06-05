@@ -16,11 +16,20 @@ class ControladorSesion implements BlocBase {
   obtenerEmpleado() async {
     Usuario usuario = Usuario();
 
-    usuario = await usuario.getFromDBbyId(71625040);
+    usuario = await getFromDBbyId(71625040);
 
     if (usuario.usuarioId != null){
       pushUsuario(usuario);
     }
+  }
+
+  obtenerEmpleados() async {
+    List<Usuario> usuarios = List<Usuario>();
+
+    usuarios = await getFromDBAll();
+
+    print(usuarios[0].nombre);
+
   }
 
   @override

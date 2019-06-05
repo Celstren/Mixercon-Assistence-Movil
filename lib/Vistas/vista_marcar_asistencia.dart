@@ -10,7 +10,11 @@ class VistaMarcarAsistenciaState extends State<VistaMarcarAsistencia>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Container();
+    return Container(
+      child: Center(
+        child: Text('Marcar Asistencia'),
+      ),
+    );
   }
 
 }
