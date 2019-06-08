@@ -3,7 +3,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'bloc_base.dart';
 
-class MarcarAsistencia implements BlocBase {
+class ControladorMarcarAsistencia implements BlocBase {
 
   BehaviorSubject<Marca> _controladorMarca = BehaviorSubject<Marca>();
   Function(Marca) get pushMarca => _controladorMarca.sink.add;
@@ -15,7 +15,13 @@ class MarcarAsistencia implements BlocBase {
 
   validarMarca(){}
 
-  guardarMarca(){}
+  guardarMarca(Marca _marca) async {
+
+    Marca p = await createPost('https://telonetavo.000webhostapp.com/Conexion/Metodos_Marca/Registrar_Marca.php',
+        body: _marca.toJson());
+    print(p.respuesta);
+
+  }
 
   @override
   void dispose() {
@@ -25,3 +31,5 @@ class MarcarAsistencia implements BlocBase {
   }
 
 }
+
+ControladorMarcarAsistencia controladorMarcarAsistencia = ControladorMarcarAsistencia();

@@ -33,6 +33,7 @@ class BaseScaffoldState extends State<BaseScaffold>{
       return GestureDetector(
         onTap: (){
           controladorVistas.pushVista(nombreOpcion);
+          Navigator.pop(context);
         },
         child: Container(
           height: hp(10),
@@ -98,7 +99,7 @@ class BaseScaffoldState extends State<BaseScaffold>{
                 default: return Container();
               }
             } else {
-              Container();
+              return Container();
             }
           }),
     );

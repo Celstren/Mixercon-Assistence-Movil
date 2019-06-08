@@ -43,6 +43,17 @@ class EmpleadoBloc implements BlocBase{
 
   obtenerListMarcas(){}
 
+  obtenerSede(int SedeID) async {
+    ModeloSede.Sede sede = ModeloSede.Sede();
+
+    sede = await ModeloSede.getFromDBbyId(SedeID);
+
+    if (sede.sedeId != null){
+      pushSede(sede);
+    }
+
+  }
+
   obtenerDiasPorHorario(int horarioID) async {
     List<ModeloDia.Dia> dias = List<ModeloDia.Dia>();
 
@@ -75,6 +86,7 @@ class EmpleadoBloc implements BlocBase{
 
     if (usuario.usuarioId != null){
       obtenerHorario(usuario.horarioId);
+      obtenerSede(usuario.sedeId);
       pushUsuario(usuario);
     }
   }
