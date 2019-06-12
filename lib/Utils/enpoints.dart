@@ -2,6 +2,7 @@ class EndPoints {
   //Metodos para Usuario
   static const OBTENER_TODOS_USUARIO = "Obtener_Todos_Usuarios.php";
   static const OBTENER_USUARIO = "Obtener_Usuario.php?Codigo=";
+  static const OBTENER_USUARIO_LOGIN = "Obtener_Usuario_Por_Login.php?";
 
   //Metodos para Horario
   static const OBTENER_TODOS_HORARIOS = "Obtener_Todos_Horarios.php";
@@ -20,5 +21,6 @@ class EndPoints {
   static const REGISTRAR_MARCA = "Registrar_Marca.php";
   static const OBTENER_TODO_MARCAS = "Obtener_Todos_Marcas.php";
   static const OBTENER_MARCA = "Obtener_Marca.php?Codigo=";
+  static const OBTENER_MARCAS_POR_USUARIOID = "Obtener_Marcas_Por_Usuario.php?Codigo=";
 
 }

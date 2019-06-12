@@ -1,8 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:mixercon_assistance/Modelos/modelo_dia.dart' as ModeloDia;
 import 'package:mixercon_assistance/Modelos/modelo_horario.dart' as ModeloHorario;
 import 'package:mixercon_assistance/Modelos/modelo_marca.dart' as ModeloMarca;
 import 'package:mixercon_assistance/Modelos/modelo_sede.dart' as ModeloSede;
 import 'package:mixercon_assistance/Modelos/modelo_usuario.dart' as ModeloUsuario;
+import 'package:mixercon_assistance/Utils/controlador_vistas.dart';
+import 'package:mixercon_assistance/Utils/nombre_vistas.dart';
+import 'package:mixercon_assistance/Utils/validators.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'bloc_base.dart';
@@ -29,6 +33,10 @@ class EmpleadoBloc implements BlocBase{
   Function(List<ModeloDia.Dia>) get pushDias => _controladorDias.sink.add;
   Stream<List<ModeloDia.Dia>> get streamDias => _controladorDias;
 
+  BehaviorSubject<ModeloDia.Dia> _controladorDia = BehaviorSubject<ModeloDia.Dia>();
+  Function(ModeloDia.Dia) get pushDia => _controladorDia.sink.add;
+  Stream<ModeloDia.Dia> get streamDia => _controladorDia;
+
   BehaviorSubject<ModeloMarca.Marca> _controladorMarca = BehaviorSubject<ModeloMarca.Marca>();
   Function(ModeloMarca.Marca) get pushMarca => _controladorMarca.sink.add;
   Stream<ModeloMarca.Marca> get streamMarca => _controladorMarca;
@@ -41,7 +49,21 @@ class EmpleadoBloc implements BlocBase{
   Function(String) get pushMensaje => _controladorMensaje.sink.add;
   Stream<String> get streamMensaje => _controladorMensaje;
 
-  obtenerListMarcas(){}
+  BehaviorSubject<int> _controladorStatus = BehaviorSubject<int>();
+  Function(int) get pushStatus => _controladorStatus.sink.add;
+  Stream<int> get streamStatus => _controladorStatus;
+
+  BehaviorSubject<String> _controladorUsuarioID = BehaviorSubject<String>();
+  Function(String) get pushUsuarioID => _controladorUsuarioID.sink.add;
+  Stream<String> get streamUsuarioID => _controladorUsuarioID;
+
+  obtenerListMarcas(String usuarioID) async {
+    List<ModeloMarca.Marca> marcas = List<ModeloMarca.Marca>();
+
+    marcas = await ModeloMarca.getFromDBbyUsuarioId(usuarioID);
+
+    pushMarcas(marcas);
+  }
 
   obtenerSede(int SedeID) async {
     ModeloSede.Sede sede = ModeloSede.Sede();
@@ -51,7 +73,6 @@ class EmpleadoBloc implements BlocBase{
     if (sede.sedeId != null){
       pushSede(sede);
     }
-
   }
 
   obtenerDiasPorHorario(int horarioID) async {
@@ -61,8 +82,12 @@ class EmpleadoBloc implements BlocBase{
 
     if (dias.length > 0){
       pushDias(dias);
+      dias.forEach((d){
+        if (validateSameDays(d.fechaActual, DateTime.now())){
+          pushDia(d);
+        }
+      });
     }
-
   }
 
   obtenerHorario(int horarioID) async {
@@ -71,24 +96,46 @@ class EmpleadoBloc implements BlocBase{
     horario = await ModeloHorario.getFromDBbyId(horarioID);
 
     if (horario.horarioId != null){
-      obtenerDiasPorHorario(horario.horarioId);
       pushHorario(horario);
+      obtenerDiasPorHorario(horario.horarioId);
     }
-
   }
 
-  obtenerMarca() {}
-
-  obtenerEmpleado() async {
+  obtenerEmpleado(int codigo, BuildContext context) async {
     ModeloUsuario.Usuario usuario = ModeloUsuario.Usuario();
 
-    usuario = await ModeloUsuario.getFromDBbyId(71625040);
+    usuario = await ModeloUsuario.getFromDBbyId(codigo);
 
     if (usuario.usuarioId != null){
       obtenerHorario(usuario.horarioId);
       obtenerSede(usuario.sedeId);
       pushUsuario(usuario);
+      controladorVistas.pushVista(NombreVistas.VISTA_INICIO);
     }
+  }
+
+  obtenerEmpleadoLogin(String codigo, String contrasena, BuildContext context) async {
+    String usuarioID = "-1";
+    usuarioID = await ModeloUsuario.getFromDBbyLogin(codigo, contrasena);
+
+    if (usuarioID != "-1"){
+      Navigator.pop(context);
+      obtenerEmpleado(int.parse(codigo), context);
+    } else {
+      Navigator.pop(context);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return SimpleDialog(
+              children: <Widget>[
+                Center(
+                  child: Text('El usuario no existe', textAlign: TextAlign.center,),
+                ),
+              ],
+            );
+          });
+    }
+
   }
 
   obtenerEmpleados() async {
@@ -96,6 +143,20 @@ class EmpleadoBloc implements BlocBase{
 
     usuarios = await ModeloUsuario.getFromDBAll();
 
+  }
+
+  limpiarDatos(){
+    pushStatus(0);
+    pushDia(null);
+    pushSede(null);
+    pushDias(null);
+    pushHorario(null);
+    pushMarca(null);
+    pushMarcas(null);
+    pushMensaje(null);
+    pushUsuario(null);
+    pushUsuarios(null);
+    pushUsuarioID(null);
   }
 
   @override
@@ -108,6 +169,9 @@ class EmpleadoBloc implements BlocBase{
     _controladorMarcas.close();
     _controladorMensaje.close();
     _controladorUsuarios.close();
+    _controladorDia.close();
+    _controladorStatus.close();
+    _controladorUsuarioID.close();
   }
 
 }

@@ -3,18 +3,19 @@ import 'package:flutter_stetho/flutter_stetho.dart';
 import 'Utils/base_scaffold.dart';
 import 'package:flutter/services.dart';
 
-void main(){
+import 'Utils/controlador_vistas.dart';
+
+void main() {
   Stetho.initialize();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]).then((_){
+  ]).then((_) {
     runApp(new MyApp());
   });
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

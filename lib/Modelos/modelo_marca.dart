@@ -74,14 +74,14 @@ class Marca {
 //  );
 
   factory Marca.fromJson(Map<String, dynamic> json) => new Marca(
-//    marcaId: int.parse(json["MarcaID"]),
+        marcaId: int.parse(json["MarcaID"]),
         usuarioId: int.parse(json["UsuarioID"]),
         tipoMarca: int.parse(json["Tipo_Marca"]),
         horaMarca: DateTime.parse(json["Hora_Marca"]),
         respuesta: json["Respuesta"],
         minutosDiferencia: int.parse(json["Minutos_Diferencia"]),
-        latitud: double.parse(json["Latitud"].toDouble()),
-        longitud: double.parse(json["Longitud"].toDouble()),
+        latitud: double.parse(json["Latitud"]),
+        longitud: double.parse(json["Longitud"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -117,9 +117,25 @@ Future<Marca> createPost(String url, {Map body}) async {
   });
 }
 
-Marca getFromDBbyUsuarioId(int usuarioId) {
-  Marca marca = Marca();
-  return marca;
+Future<List<Marca>> getFromDBbyUsuarioId(String usuarioId) async {
+  List<Marca> marcas = List<Marca>();
+
+  final response = await http.get(URLBase + EndPoints.OBTENER_MARCAS_POR_USUARIOID + usuarioId);
+
+  if (response.statusCode == 200){
+    final data = json.decode(response.body);
+    Marca marca = Marca();
+    List<dynamic> result = data["resultado"];
+
+    result.forEach((d){
+      marca = Marca.fromJson(d);
+      marcas.add(marca);
+    });
+  } else {
+    throw Exception('Fallo al conseguir datos de la base de datos');
+  }
+
+  return marcas;
 }
 
 List<Marca> getFromDBAll() {

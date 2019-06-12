@@ -78,6 +78,23 @@ Future<Usuario> getFromDBbyId(int usuarioId) async {
   return usuario;
 }
 
+Future<String> getFromDBbyLogin(String codigo, String contrasena) async {
+  String result = "-1";
+
+  final response =
+  await http.get(URLBase + EndPoints.OBTENER_USUARIO_LOGIN + "Codigo=$codigo&Contrasena=$contrasena");
+  if (response.statusCode == 200){
+    final data = json.decode(response.body);
+    if (data["resultado"] != 'El usuario no existe'){
+      result = data["resultado"][0]["UsuarioID"];
+    }
+  } else {
+    throw Exception('Fallo al conseguir datos de la base de datos');
+  }
+
+  return result;
+}
+
 Future<List<Usuario>> getFromDBAll() async {
   List<Usuario> usuarios = List<Usuario>();
 
@@ -96,12 +113,4 @@ Future<List<Usuario>> getFromDBAll() async {
   }
 
   return usuarios;
-}
-
-int updateUsuarioToDB(){
-  return 0;
-}
-
-int deleteUsuarioToDB(){
-  return 0;
 }

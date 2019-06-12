@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mixercon_assistance/Utils/screen_utils.dart';
 import 'package:mixercon_assistance/Utils/vista_inicio.dart';
 import 'package:mixercon_assistance/Vistas/vista_gestion_empleado.dart';
+import 'package:mixercon_assistance/Vistas/vista_incio_sesion.dart';
 import 'package:mixercon_assistance/Vistas/vista_marcar_asistencia.dart';
 
 import 'IconDrawer.dart';
@@ -19,7 +20,7 @@ class BaseScaffoldState extends State<BaseScaffold>{
   @override
   void initState() {
     // TODO: implement initState
-    controladorVistas.pushVista(NombreVistas.VISTA_INICIO);
+    controladorVistas.pushVista(NombreVistas.VISTA_INICIAR_SESION);
     super.initState();
   }
 
@@ -73,16 +74,28 @@ class BaseScaffoldState extends State<BaseScaffold>{
 
     // TODO: implement build
     return Scaffold(
-      drawer: Drawer(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              _construirTituloDrawer(),
-              _construirCuerpoDrawer(),
-            ],
-          ),
-        ),
-      ),
+      drawer: StreamBuilder(stream: controladorVistas.streamVista,builder: (context, vistaSnapshot){
+        if (vistaSnapshot.hasData && vistaSnapshot.data != NombreVistas.VISTA_INICIAR_SESION){
+          return Drawer(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  _construirTituloDrawer(),
+                  _construirCuerpoDrawer(),
+                ],
+              ),
+            ),
+          );
+        } else {
+          return Drawer(
+            child: Container(
+              child: Center(
+                child: _construirTituloDrawer(),
+              ),
+            ),
+          );
+        }
+      }),
       appBar: AppBar(
         backgroundColor: Colors.yellow,
         iconTheme: IconThemeData(color: Colors.black),
@@ -92,10 +105,11 @@ class BaseScaffoldState extends State<BaseScaffold>{
           builder: (context, vistaSnapshot){
             if (vistaSnapshot.hasData){
               switch (vistaSnapshot.data){
-                case NombreVistas.VISTA_INICIO: return VistaInicio();
+                case NombreVistas.VISTA_INICIO: return VistaInicio(cerrarSesion: false,);
+                case NombreVistas.VISTA_INICIAR_SESION: return VistaInicioSesion();
                 case NombreVistas.VISTA_MARCAR_ASISTENCIA: return VistaMarcarAsistencia();
                 case NombreVistas.VISTA_PERFIL: return VistaGestionEmpleado();
-                case NombreVistas.VISTA_CERRAR_SESION: return VistaInicio();
+                case NombreVistas.VISTA_CERRAR_SESION:  return VistaInicio(cerrarSesion: true,);
                 default: return Container();
               }
             } else {
