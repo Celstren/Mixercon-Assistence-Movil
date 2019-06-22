@@ -130,7 +130,7 @@ class VistaMarcarAsistenciaState extends State<VistaMarcarAsistencia> {
               ],
             );
           });
-//      controladorMarcarAsistencia.guardarMarca(nuevaMarca);
+      controladorMarcarAsistencia.guardarMarca(nuevaMarca);
     } else {
       showDialog(
           context: context,

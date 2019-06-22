@@ -95,6 +95,7 @@ class VistaInicioSesionState extends State<VistaInicioSesion> {
                             flex: 2,
                             child: Container(
                               child: TextField(
+                                obscureText: true,
                                 onChanged: (value){
                                   setState(() {
                                     contrasena = value;
