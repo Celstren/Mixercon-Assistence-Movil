@@ -28,97 +28,74 @@ class VistaInicioSesionState extends State<VistaInicioSesion> {
 
     // TODO: implement build
     return Container(
-      child: Column(
-        children: <Widget>[
-          Spacer(),
-          Expanded(
-            flex: 2,
-            child: Container(
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(vertical: hp(5)),
               child: Center(
                 child: Text('INICIAR SESIÓN', textAlign: TextAlign.center, style: TextStyle(fontSize: wp(10)),),
               ),
             ),
-          ),
-          Spacer(),
-          Expanded(
-            flex: 5,
-            child: Container(
+            Container(
               margin: EdgeInsets.symmetric(horizontal: wp(4)),
               child: Column(
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text('Código de empleado'),
-                              ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: hp(2)),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Código de empleado'),
+                          ),
+                        ),
+                        Container(
+                          child: TextField(
+                            onChanged: (value){
+                              setState(() {
+                                codigoEmpleado = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                hintText: "Ingresar código de empleado"
                             ),
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              child: TextField(
-                                onChanged: (value){
-                                  setState(() {
-                                    codigoEmpleado = value;
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                  hintText: "Ingresar código de empleado"
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text('Contraseña'),
-                              ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: hp(2)),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text('Contraseña'),
+                          ),
+                        ),
+                        Container(
+                          child: TextField(
+                            obscureText: true,
+                            onChanged: (value){
+                              setState(() {
+                                contrasena = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                                hintText: "Ingresar contraseña"
                             ),
                           ),
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              child: TextField(
-                                obscureText: true,
-                                onChanged: (value){
-                                  setState(() {
-                                    contrasena = value;
-                                  });
-                                },
-                                decoration: InputDecoration(
-                                    hintText: "Ingresar contraseña"
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          Spacer(),
-          Expanded(
-            flex: 2,
-            child: GestureDetector(
+            GestureDetector(
               onTap: (){
                 if (codigoEmpleado.trim().isNotEmpty && contrasena.trim().isNotEmpty){
 
@@ -164,25 +141,20 @@ class VistaInicioSesionState extends State<VistaInicioSesion> {
                 }
               },
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: wp(4)),
+                margin: EdgeInsets.symmetric(horizontal: wp(4), vertical: hp(5)),
                 color: Colors.blue,
                 child: Center(
                   child: Text('INGRESAR', textAlign: TextAlign.center, style: TextStyle(fontSize: wp(10), color: Colors.white),),
                 ),
               ),
             ),
-          ),
-          Spacer(),
-          Expanded(
-            flex: 2,
-            child: Container(
+            Container(
               child: Center(
                 child: Text('OLVIDÉ MI CONTRASEÑA', textAlign: TextAlign.center, style: TextStyle(fontSize: wp(4), color: Colors.blue),),
               ),
             ),
-          ),
-          Spacer(),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -114,6 +114,7 @@ class VistaInicioState extends State<VistaInicio> {
                     }
 
                     return datosCargados? Container(
+                      height: hp(100),
                       child: ListView(
                         scrollDirection: Axis.vertical,
                         children: <Widget>[

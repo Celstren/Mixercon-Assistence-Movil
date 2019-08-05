@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stetho/flutter_stetho.dart';
 import 'Utils/base_scaffold.dart';
 import 'package:flutter/services.dart';
 
-import 'Utils/controlador_vistas.dart';
-
 void main() {
-  Stetho.initialize();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
